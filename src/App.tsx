@@ -1,13 +1,15 @@
 import React from "react";
+import UserSummary from "./components/UserSummary";
 // import TodoList from "./components/TodoList";
-import DepartmentSummary from "./components/DepartmentSummary";
+// import DepartmentSummary from "./components/DepartmentSummary";
 
 
 const App: React.FC = () => {
   return (
     <div>
       {/* <TodoList/> */}
-      <DepartmentSummary/>
+      {/* <DepartmentSummary/> */}
+      <UserSummary/>
     </div>
   );
 };

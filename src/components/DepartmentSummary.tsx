@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import "../scss/DepartmentSummary.scss";
 
-// 🟢 1. กำหนด Type สำหรับ User
 interface User {
   id: number;
   name: string;
@@ -27,16 +26,16 @@ interface User {
   };
 }
 
-// 🟢 2. กำหนด Type สำหรับข้อมูลที่จัดกลุ่ม
+
 interface DepartmentData {
   male: number;
   female: number;
   ageRange: string;
   hair: Record<string, number>;
-  addressUser: Record<string, string>; // ✅ ใช้ข้อมูลที่อยู่เต็มรูปแบบ
+  addressUser: Record<string, string>; 
 }
 
-// 🟢 3. Type ของข้อมูลทั้งหมดที่จัดกลุ่ม
+
 type GroupedData = Record<string, DepartmentData>;
 
 const DepartmentSummary: React.FC = () => {
@@ -58,7 +57,6 @@ const DepartmentSummary: React.FC = () => {
     fetchData();
   }, []);
 
-  // 🟢 4. ฟังก์ชันจัดกลุ่มข้อมูลตาม department
   const groupByDepartment = (users: User[]): GroupedData => {
     const groupedData: GroupedData = {};
 
@@ -73,15 +71,12 @@ const DepartmentSummary: React.FC = () => {
         };
       }
 
-      // นับจำนวนเพศ
       if (user.gender === 'male') groupedData[user.department].male++;
       else if (user.gender === 'female') groupedData[user.department].female++;
 
-      // คำนวณช่วงอายุเป็นช่วงสิบปี
       const ageRange = `${Math.floor(user.age / 10) * 10}-${Math.floor(user.age / 10) * 10 + 9}`;
       groupedData[user.department].ageRange = ageRange;
 
-      // ✅ ใช้เฉพาะ `color` จาก `hair`
       const hairColor = user.hair.color;
       if (!groupedData[user.department].hair[hairColor]) {
         groupedData[user.department].hair[hairColor] = 1;
@@ -89,10 +84,8 @@ const DepartmentSummary: React.FC = () => {
         groupedData[user.department].hair[hairColor]++;
       }
 
-      // ✅ ใช้ที่อยู่เต็มรูปแบบ
       const fullAddress = `${user.address.address}, ${user.address.city}, ${user.address.state} ${user.address.stateCode}, ${user.address.country}, ${user.address.postalCode}`;
 
-      // ✅ จัดเก็บที่อยู่ของผู้ใช้
       groupedData[user.department].addressUser[user.name] = fullAddress;
     });
 
@@ -119,7 +112,6 @@ const DepartmentSummary: React.FC = () => {
             </div>
 
             <div className="address-user">
-              {/* 🟢 แสดงที่อยู่เต็มรูปแบบ */}
               {Object.entries(data[department].addressUser).map(([name, address]) => (
                 <div key={name}>
                    {address}
