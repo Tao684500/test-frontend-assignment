@@ -19,7 +19,6 @@ const TodoList: React.FC = () => {
   const [fruits, setFruits] = useState<Item[]>([]);
   const [vegetables, setVegetables] = useState<Item[]>([]);
 
-  // Function to move item to a category (Fruits or Vegetables)
   const moveToCategory = (item: Item) => {
     setItems((prevItems) => prevItems.filter((i) => i.id !== item.id));
     if (item.type === "fruit") {
@@ -29,7 +28,6 @@ const TodoList: React.FC = () => {
     }
   };
 
-  // Function to move item back to the main column (All Items)
   const moveToMainColumn = (item: Item) => {
     if (item.type === "fruit") {
       setFruits((prev) => prev.filter((i) => i.id !== item.id));
@@ -39,48 +37,55 @@ const TodoList: React.FC = () => {
     setItems((prevItems) => [...prevItems, item]);
   };
 
-  // useEffect to move items back after 5 seconds
   useEffect(() => {
-    // If there are any items in fruits or vegetables, start the timer
     if (fruits.length > 0 || vegetables.length > 0) {
       const timer = setTimeout(() => {
-        // Move items from fruits and vegetables back to All Items
         const allItems = [...fruits, ...vegetables];
         setItems((prevItems) => [...prevItems, ...allItems]);
-        setFruits([]); // Clear fruits
-        setVegetables([]); // Clear vegetables
+        setFruits([]); 
+        setVegetables([]); 
       }, 5000);
 
-      // Clear the timeout on cleanup
       return () => clearTimeout(timer);
     }
   }, [fruits, vegetables]);
 
   return (
     <div className="container">
-      <div className="column">
-        <h2>All Items</h2>
-        {items.map((item) => (
-          <button key={item.id} onClick={() => moveToCategory(item)}>
-            {item.name}
-          </button>
-        ))}
-      </div>
-      <div className="column">
-        <h2>Fruits</h2>
-        {fruits.map((item) => (
-          <button key={item.id} onClick={() => moveToMainColumn(item)}>
-            {item.name}
-          </button>
-        ))}
-      </div>
-      <div className="column">
-        <h2>Vegetables</h2>
-        {vegetables.map((item) => (
-          <button key={item.id} onClick={() => moveToMainColumn(item)}>
-            {item.name}
-          </button>
-        ))}
+      <h1>Auto Delete Todo List</h1>
+      <div className="warp">
+        <div className="column">
+          <h2 className="head">All Items</h2>
+          <div className="detail">
+            {items.map((item) => (
+              <button key={item.id} onClick={() => moveToCategory(item)}>
+                {item.name}
+              </button>
+            ))}
+          </div>
+        </div>
+        <div className="column">
+          <h2 className="head">Fruits</h2>
+          <div className="detail">
+            {fruits.map((item) => (
+              <button key={item.id} onClick={() => moveToMainColumn(item)}>
+                {item.name}
+              </button>
+            ))}
+          </div>
+            <div className="btn"></div>
+        </div>
+        <div className="column">
+          <h2 className="head">Vegetables</h2>
+          <div className="detail">
+            {vegetables.map((item) => (
+              <button key={item.id} onClick={() => moveToMainColumn(item)}>
+                {item.name}
+              </button>
+            ))}
+            <div className="btn"></div>
+          </div>
+        </div>
       </div>
     </div>
   );
