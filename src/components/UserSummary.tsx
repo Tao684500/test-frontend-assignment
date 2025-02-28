@@ -23,10 +23,11 @@ interface User {
 const UserSummary: React.FC = () => {
   const [data, setData] = useState<User[]>([]);
   const [filteredData, setFilteredData] = useState<User[]>([]);
-  const [gender, setGender] = useState<string>(""); // สำหรับเลือกเพศ
-  const [ageRange, setAgeRange] = useState<string>(""); // สำหรับเลือกช่วงอายุ
-  const [currentPage, setCurrentPage] = useState<number>(1); // หน้าที่เลือก
-  const itemsPerPage = 5; // จำนวนข้อมูลที่แสดงในแต่ละหน้า
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [gender, setGender] = useState<string>("");
+  const [ageRange, setAgeRange] = useState<string>("");
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const itemsPerPage = 5;
 
   useEffect(() => {
     const fetchData = async () => {
@@ -43,35 +44,36 @@ const UserSummary: React.FC = () => {
     fetchData();
   }, []);
 
-  // ฟังก์ชันสำหรับกรองข้อมูลตามเพศและช่วงอายุ
   const filterData = () => {
     let filtered = data;
 
-    // กรองตามเพศ
     if (gender) {
       filtered = filtered.filter(user => user.gender === gender);
     }
 
-    // กรองตามช่วงอายุ
     if (ageRange) {
       const [minAge, maxAge] = ageRange.split("-").map(Number);
       filtered = filtered.filter(user => user.age >= minAge && user.age <= maxAge);
     }
 
+    if (searchTerm) {
+      filtered = filtered.filter(user => 
+        user.firstName.toLowerCase().includes(searchTerm.toLowerCase()) || 
+        user.lastName.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+
     setFilteredData(filtered);
   };
 
-  // เมื่อมีการเปลี่ยนแปลงค่าของ dropdown
   useEffect(() => {
     filterData();
-  }, [gender, ageRange]);
+  }, [gender, ageRange, searchTerm]);
 
-  // ฟังก์ชันที่ใช้ในการคำนวณข้อมูลที่จะแสดงในแต่ละหน้า
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = filteredData.slice(indexOfFirstItem, indexOfLastItem);
 
-  // ฟังก์ชันสำหรับการเปลี่ยนหน้า
   const changePage = (pageNumber: number) => {
     if (pageNumber >= 1 && pageNumber <= Math.ceil(filteredData.length / itemsPerPage)) {
       setCurrentPage(pageNumber);
@@ -81,8 +83,16 @@ const UserSummary: React.FC = () => {
   return (
     <div className="user-summary-container">
       <h1>User Summary</h1>
-
-      {/* Dropdown สำหรับเลือกเพศ */}
+      <div>
+        <label htmlFor="search">Search (First Name / Last Name): </label>
+        <input 
+          type="text" 
+          id="search" 
+          value={searchTerm} 
+          onChange={(e) => setSearchTerm(e.target.value)} 
+          placeholder="Enter name"
+        />
+      </div>
       <div>
         <label htmlFor="gender">Select Gender: </label>
         <select id="gender" onChange={(e) => setGender(e.target.value)} value={gender}>
@@ -91,8 +101,6 @@ const UserSummary: React.FC = () => {
           <option value="female">Female</option>
         </select>
       </div>
-
-      {/* Dropdown สำหรับเลือกช่วงอายุ */}
       <div>
         <label htmlFor="ageRange">Select Age Range: </label>
         <select id="ageRange" onChange={(e) => setAgeRange(e.target.value)} value={ageRange}>
@@ -105,8 +113,6 @@ const UserSummary: React.FC = () => {
           <option value="51-60">51-60</option>
         </select>
       </div>
-
-      {/* แสดงข้อมูลผู้ใช้ */}
       <div>
         {currentItems.length > 0 ? (
           currentItems.map((user) => (
@@ -122,8 +128,6 @@ const UserSummary: React.FC = () => {
           <p>No users found matching the filters.</p>
         )}
       </div>
-
-      {/* Pagination with Previous and Next buttons */}
       <div className="pagination">
         <button 
           onClick={() => changePage(currentPage - 1)} 
