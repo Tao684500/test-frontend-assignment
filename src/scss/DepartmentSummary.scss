@@ -1,0 +1,71 @@
+.app {
+    font-family: 'Arial', sans-serif;
+    padding: 20px;
+    background-color: #f4f6f9;
+  }
+  
+  .department-summary {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin: 20px 0;
+    padding: 20px;
+    transition: all 0.3s ease-in-out;
+  
+    &:hover {
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+    }
+  
+    h2 {
+      color: #2c3e50;
+      font-size: 24px;
+      margin-bottom: 10px;
+    }
+  
+    p {
+      color: #7f8c8d;
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+  
+    .hair-summary,
+    .address-user {
+      margin-top: 10px;
+    }
+  
+    .hair-summary div,
+    .address-user div {
+      font-size: 16px;
+      color: #34495e;
+      margin: 5px 0;
+    }
+  
+    .hair-summary span,
+    .address-user span {
+      font-weight: bold;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .app {
+      padding: 10px;
+    }
+  
+    .department-summary {
+      padding: 15px;
+    }
+  
+    h2 {
+      font-size: 20px;
+    }
+  
+    p {
+      font-size: 16px;
+    }
+  
+    .hair-summary div,
+    .address-user div {
+      font-size: 14px;
+    }
+  }
+  
