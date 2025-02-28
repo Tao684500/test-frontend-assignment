@@ -1,0 +1,35 @@
+.container {
+    display: flex;
+    justify-content: space-around;
+    padding: 20px;
+  
+    .column {
+      width: 30%;
+      border: 1px solid #ccc;
+      padding: 10px;
+      text-align: center;
+  
+      h2 {
+        font-size: 20px;
+        color: #333;
+      }
+  
+      button {
+        position: relative;
+        z-index: 99;
+        display: block;
+        width: 100%;
+        margin: 5px 0;
+        padding: 10px;
+        border: none;
+        background-color: lightblue;
+        cursor: pointer;
+        transition: background-color 0.3s;
+  
+        &:hover {
+          background-color: deepskyblue;
+        }
+      }
+    }
+  }
+  
