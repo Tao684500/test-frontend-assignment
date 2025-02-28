@@ -3,12 +3,13 @@ import axios from 'axios';
 import "../scss/DepartmentSummary.scss";
 
 const DepartmentSummary: React.FC = () => {
-  const [data, setData] = useState<any>([]);
+  const [data, setData] = useState<any>(null);
 
   useEffect(() => {
     const fetchData = async () => {
       const response = await axios.get('https://dummyjson.com/users');
       const users = response.data.users;
+      console.log(users);
       const transformedData = groupByDepartment(users);
       setData(transformedData);
     };
@@ -17,30 +18,26 @@ const DepartmentSummary: React.FC = () => {
   }, []);
 
   const groupByDepartment = (users: any) => {
-    const groupedData: any = [];
-    
+    const groupedData: any = {};
     users.forEach((user: any) => {
-      let department = groupedData.find((dept: any) => dept.department === user.department);
-      if (!department) {
-        department = {
-          department: user.department,
+      if (!groupedData[user.department]) {
+        groupedData[user.department] = {
           male: 0,
           female: 0,
           ageRange: '',
           hair: { Black: 0, Blond: 0, Chestnut: 0, Brown: 0 },
-          addressUser: [],
+          addressUser: {},
         };
-        groupedData.push(department);
       }
 
-      if (user.gender === 'male') department.male++;
-      else if (user.gender === 'female') department.female++;
+      if (user.gender === 'male') groupedData[user.department].male++;
+      else if (user.gender === 'female') groupedData[user.department].female++;
 
       const ageRange = `${Math.floor(user.age / 10) * 10}-${Math.floor(user.age / 10) * 10 + 9}`;
-      department.ageRange = ageRange;
+      groupedData[user.department].ageRange = ageRange;
 
-      department.hair[user.hair]++;
-      department.addressUser.push({ name: user.name, postalCode: user.postalCode });
+      groupedData[user.department].hair[user.hair]++;
+      groupedData[user.department].addressUser[`${user.name}`] = user.postalCode;
     });
 
     return groupedData;
@@ -49,24 +46,24 @@ const DepartmentSummary: React.FC = () => {
   return (
     <div className="department-summary-container">
       <h1>Department Summary</h1>
-      {data.length > 0 ? (
-        data.map((departmentData: any, index: number) => (
-          <div key={index} className="department-summary">
-            <h2>{departmentData.department}</h2>
-            <p>Male: {departmentData.male}</p>
-            <p>Female: {departmentData.female}</p>
-            <p>Age Range: {departmentData.ageRange}</p>
+      {data ? (
+        Object.keys(data).map((department) => (
+          <div key={department} className="department-summary">
+            <h2>{department}</h2>
+            <p>Male: {data[department].male}</p>
+            <p>Female: {data[department].female}</p>
+            <p>Age Range: {data[department].ageRange}</p>
             <div className="hair-summary">
-              {Object.entries(departmentData.hair).map(([hairColor, count]) => (
+              {Object.entries(data[department].hair).map(([hairColor, count]) => (
                 <div key={hairColor}>
                   <span>{hairColor}: </span>{count as number}
                 </div>
               ))}
             </div>
             <div className="address-user">
-              {departmentData.addressUser.map(({ name, postalCode }: any) => (
+              {Object.entries(data[department].addressUser).map(([name, postalCode]) => (
                 <div key={name}>
-                  {name}: {postalCode}
+                  {name}: {postalCode as string}
                 </div>
               ))}
             </div>
